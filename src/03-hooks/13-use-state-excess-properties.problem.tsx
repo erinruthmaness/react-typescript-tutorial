@@ -5,6 +5,9 @@ interface TagState {
   tags: { id: number; value: string }[];
 }
 
+//in TS, **you are allowed to pass excess properties from the return values in functions**
+//in general, try to make TS do **object comparisons** rather than **function comparisons**
+
 export const Tags = () => {
   const [state, setState] = useState<TagState>({
     tags: [],
@@ -17,7 +20,7 @@ export const Tags = () => {
           <button
             key={tag.id}
             onClick={() => {
-              setState((currentState) => ({
+              setState((currentState): TagState => ({
                 ...currentState,
                 // @ts-expect-error
                 tagselected: tag.id,
@@ -30,7 +33,7 @@ export const Tags = () => {
       })}
       <button
         onClick={() => {
-          setState((currentState) => ({
+          setState((currentState): TagState  => ({
             ...currentState,
             tags: [
               ...currentState.tags,

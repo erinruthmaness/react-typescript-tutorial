@@ -5,7 +5,7 @@ interface Props {
 }
 
 /* @ts-expect-error */
-export const Button = (props: Props) => {
+export const Button: React.FC<Props> = (props) => {
   return {
     ohDear: "123",
   };
