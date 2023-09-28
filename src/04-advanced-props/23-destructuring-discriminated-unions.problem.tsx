@@ -10,6 +10,7 @@
 type ModalProps =
   | {
       variant: "no-title";
+      title?: never;
     }
   | {
       variant: "title";
@@ -32,9 +33,9 @@ export const Test = () => {
 
       {/* @ts-expect-error */}
       <Modal />
+      {/* @ts-expect-error */}
       <Modal
         variant="no-title"
-        // @ts-expect-error
         title="Oh dear"
       />
     </div>

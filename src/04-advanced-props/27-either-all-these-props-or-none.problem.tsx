@@ -12,10 +12,12 @@ import { ChangeEventHandler } from "react";
  */
 type InputProps = (
   | {
-      value: string;
-      onChange: ChangeEventHandler;
-    }
-  | {}
+    value: string;
+    onChange: ChangeEventHandler;
+  }
+  | { value?: never; onChange?: never; } //this only works because "never" is reduced to "undefined"
+  //if it's in a union with something else, it always just reduces itself to "undefined"
+  //so you might as well used "undefined" in the first place
 ) & {
   label: string;
 };
@@ -34,14 +36,14 @@ export const Input = ({ label, ...props }: InputProps) => {
 export const Test = () => {
   return (
     <div>
-      <Input label="Greeting" value="Hello" onChange={() => {}} />
+      <Input label="Greeting" value="Hello" onChange={() => { }} />
       <Input label="Greeting" />
 
       {/* @ts-expect-error */}
       <Input label="Greeting" value="Hello" />
 
       {/* @ts-expect-error */}
-      <Input label="Greeting" onChange={() => {}} />
+      <Input label="Greeting" onChange={() => { }} />
     </div>
   );
 };

@@ -1,11 +1,11 @@
 type ModalProps =
   | {
-      variant: "no-title";
-    }
+    variant: "no-title";
+  }
   | {
-      variant: "title";
-      title: string;
-    };
+    variant: "title";
+    title: string;
+  };
 
 /**
  * Sadly, this doesn't work - TypeScript can't figure out from narrowing
@@ -15,6 +15,7 @@ export const Modal = ({ variant, ...props }: ModalProps) => {
   if (variant === "no-title") {
     return <div>No title</div>;
   } else {
+    // @ts-expect-error
     return <div>Title: {props.title}</div>;
   }
 };

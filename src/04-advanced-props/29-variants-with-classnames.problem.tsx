@@ -1,8 +1,11 @@
+
 const classNamesMap = {
   primary: "bg-blue-500 text-white",
   secondary: "bg-gray-200 text-black",
   success: "bg-green-500 text-white",
 };
+
+type ButtonVariant = keyof typeof classNamesMap;
 
 type ButtonProps = {
   /**
@@ -14,7 +17,7 @@ type ButtonProps = {
    *
    * Hint: you'll need 'typeof' and 'keyof'.
    */
-  variant: "primary" | "secondary" | "success";
+  variant: ButtonVariant;
 };
 
 export const Button = (props: ButtonProps) => {

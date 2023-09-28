@@ -14,20 +14,27 @@ type Size = keyof typeof presetSizes;
  */
 
 type LooseSize = Size | string;
+//LooseSize is just inferred as any string
+type ComputedSize = Size | (string & {});
+//ComputedSize does an extra bit of compilation, which manages
+//to force it to also compile Size correctly and to create the union type
+// "xs" | "sm" | string - which allows for autocompletion
+//this looks hacky but is actually the selected solution
+//note that the React TS file actually uses this same trick for type AriaRole
 
-export const Icon = (props: { size: LooseSize }) => {
+export const Icon = (props: { size: ComputedSize; }) => {
   return (
     <div
       style={{
         width:
           props.size in presetSizes
             ? presetSizes[
-                /**
-                 * The 'as' is necessary here because TS can't seem to narrow
-                 * props.size to Size properly
-                 */
-                props.size as Size
-              ]
+            /**
+             * The 'as' is necessary here because TS can't seem to narrow
+             * props.size to Size properly
+             */
+            props.size as Size
+            ]
             : props.size,
       }}
     />
