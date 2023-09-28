@@ -1,3 +1,4 @@
+export type PossibleVariants = "with-button" | "without-button";
 /**
  * In this exercise, we'll look at an example where generics are NOT
  * needed.
@@ -19,12 +20,10 @@ export type ModalProps<TVariant extends PossibleVariants> = {
   variant: TVariant;
 } & (TVariant extends "with-button"
   ? {
-      buttonLabel: string;
-      onButtonClick: () => void;
-    }
+    buttonLabel: string;
+    onButtonClick: () => void;
+  }
   : {});
-
-export type PossibleVariants = "with-button" | "without-button";
 
 export const Modal = <TVariant extends PossibleVariants>(
   props: ModalProps<TVariant>,
@@ -33,25 +32,39 @@ export const Modal = <TVariant extends PossibleVariants>(
   return null;
 };
 
+export type My_ModalProps = {
+  isOpen: boolean;
+} & ({
+  variant: "without-button";
+} | {
+  variant: "with-button";
+  buttonLabel: string,
+  onButtonClick: () => void;
+});
+
+export const My_Modal = (props: My_ModalProps) => {
+  return null;
+};
+
 export const Parent = () => {
   return (
     <>
-      <Modal
+      <My_Modal
         isOpen
         variant="with-button"
         buttonLabel="Click Me!"
-        onButtonClick={() => {}}
-      ></Modal>
-      <Modal isOpen variant="without-button"></Modal>
+        onButtonClick={() => { }}
+      ></My_Modal>
+      <My_Modal isOpen variant="without-button"></My_Modal>
 
       {/* @ts-expect-error */}
-      <Modal isOpen variant="with-button"></Modal>
+      <My_Modal isOpen variant="with-button"></My_Modal>
 
-      <Modal
+      <My_Modal
         isOpen
         variant="without-button"
         /* @ts-expect-error */
-        onButtonClick={() => {}}
+        onButtonClick={() => { }}
       />
     </>
   );

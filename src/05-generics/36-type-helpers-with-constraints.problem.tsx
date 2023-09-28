@@ -1,8 +1,8 @@
 import { Equal, Expect } from "../helpers/type-utils";
 
-type AllOrNothing<T> = T | ToUndefinedObject<T>;
+type AllOrNothing<T extends Record<string, any>> = T | ToUndefinedObject<T>; //could also use this
 
-type ToUndefinedObject<T> = Partial<Record<keyof T, undefined>>;
+type ToUndefinedObject<T extends object> = Partial<Record<keyof T, undefined>>; //object will accept any non-primitive type bc JS
 
 /**
  * There's a problem with our AllOrNothing type. It's letting
@@ -17,5 +17,5 @@ type tests = [
   AllOrNothing<number>,
   // @ts-expect-error
   AllOrNothing<undefined>,
-  Expect<Equal<AllOrNothing<{ a: string }>, { a: string } | { a?: undefined }>>
+  Expect<Equal<AllOrNothing<{ a: string; }>, { a: string; } | { a?: undefined; }>>
 ];

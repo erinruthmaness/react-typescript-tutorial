@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
 
-export type Result<T> = [
-  "loading" | "success" | "error",
-  T | Error | undefined,
-];
+export type Result<T> = ["loading", undefined] | ["success", T] | ["error", Error];
 
 /**
  * Let's look at one more example of discriminated unions. This time, we're
@@ -34,7 +31,7 @@ export const useData = <T,>(url: string): Result<T> => {
 };
 
 const Component = () => {
-  const [status, value] = useData<{ title: string }>(
+  const [status, value] = useData<{ title: string; }>(
     "https://jsonplaceholder.typicode.com/todos/1",
   );
 

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Equal, Expect } from "../helpers/type-utils";
 
+//could create a type helper and define the return type that way
 type UseStateAsObjectReturn<T> = {
   value: T;
   set: React.Dispatch<React.SetStateAction<T>>;

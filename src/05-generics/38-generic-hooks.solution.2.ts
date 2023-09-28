@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Equal, Expect } from "../helpers/type-utils";
 
+//could manually define the return type
 export const useStateAsObject = <T>(
   initial: T,
 ): {

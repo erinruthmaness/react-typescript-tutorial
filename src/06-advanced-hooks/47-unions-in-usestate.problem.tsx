@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Equal, Expect } from "../helpers/type-utils";
 import { appendVideoToDomAndPlay, fetchVideo } from "fake-external-lib";
 
+type State = "loading" | "loaded" | "error"
 /**
  * This is a complex problem. We want to load a video from a URL and play it.
  * We also want to show a loading spinner while it loads, and an error message
@@ -13,7 +14,7 @@ import { appendVideoToDomAndPlay, fetchVideo } from "fake-external-lib";
  * 1. See if you can fix the errors below by making the type of state more specific.
  */
 export const useLoadAsyncVideo = (src: string) => {
-  const [state, setState] = useState("loading");
+  const [state, setState] = useState<State>("loading");
 
   useEffect(() => {
     setState("loading");

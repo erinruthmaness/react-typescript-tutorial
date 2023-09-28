@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Equal, Expect } from "../helpers/type-utils";
 
 export const useStateAsObject = <T>(initial: T) => {
+  //could pass the T manually to useState... even though you don't need to since you're passing "initial" which is type of T
   const [value, set] = useState<T>(initial);
 
   return {
