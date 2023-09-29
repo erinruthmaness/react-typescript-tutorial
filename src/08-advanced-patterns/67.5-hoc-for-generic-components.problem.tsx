@@ -1,13 +1,26 @@
 import { Router, useRouter } from "fake-external-lib";
 import { Equal, Expect } from "../helpers/type-utils";
 
-export const withRouter = <TProps,>(Component: React.ComponentType<TProps>) => {
+//my attempt
+// @ts-expect-error TProps can't take a generic
+type My_ComponentGettingWrapped<TProps, P> = (props: TProps<P>) => React.ReactElement;
+type My_RouterHOC<TProps, P> = (Component: My_ComponentGettingWrapped<TProps, P>) => React.ReactElement;
+
+//solution
+type ComponentGettingWrapped<TProps> = (props: TProps) => React.ReactNode;
+type HOCReturnType<TProps> = (props: Omit<TProps, "router">) => React.ReactNode;
+
+//solution: withRouter is still a generic function (takes TProps), but 
+//it now has a specific ReturnType so that the `.displayName` mutation doesn't ruin the inference outside of `withRouter`,
+//and just cast displayName onto a type that makes sense internally
+export const withRouter = <TProps,>(Component: ComponentGettingWrapped<TProps>): HOCReturnType<TProps> => {
+
   const NewComponent = (props: Omit<TProps, "router">) => {
     const router = useRouter();
     return <Component {...(props as TProps)} router={router} />;
   };
 
-  NewComponent.displayName = `withRouter(${Component.displayName})`;
+  NewComponent.displayName = `withRouter(${(Component as { displayName?: string; }).displayName})`;
 
   return NewComponent;
 };

@@ -1,10 +1,4 @@
-import {
-  ComponentPropsWithoutRef,
-  ElementType,
-  ForwardedRef,
-  forwardRef,
-  useRef,
-} from "react";
+import React from "react";
 import { Equal, Expect } from "../helpers/type-utils";
 
 /**
@@ -13,26 +7,44 @@ import { Equal, Expect } from "../helpers/type-utils";
  *
  * So, don't feel bad if you don't find it at all.
  */
+// Added fixedForwardRef from a previous exercise
 
-export const UnwrappedLink = <TAs extends ElementType>(
-  props: {
-    as?: TAs;
-  } & ComponentPropsWithoutRef<ElementType extends TAs ? "a" : TAs>,
-  ref: ForwardedRef<any>,
+type FixedForwardRef = <T, P = {}>(
+  render: (props: P, ref: React.Ref<T>) => React.ReactNode,
+) => (props: P & React.RefAttributes<T>) => React.ReactNode;
+const fixedForwardRef = React.forwardRef as FixedForwardRef;
+
+//calls Omit on each member of a union type
+//conditional types distribute over all members of the union
+//so `T extends any` runs on each member of the union, returns true (duh), and then runs Omit on that member
+type DistributiveOmit<T, TOmitted extends PropertyKey> = T extends any ? Omit<T, TOmitted> : never;
+//checks if TAs is narrower than React.ElementType: if yes, returns TAs. If no, returns "a" (anchor)
+type WrappedElementType<TAs extends React.ElementType> = React.ElementType extends TAs ? "a" : TAs;
+//all the props that go with an Element of type TAs, including a ref
+type TAsElementProps<TAs extends React.ElementType> = React.ComponentPropsWithRef<WrappedElementType<TAs>>;
+//go through all the union types and pick out anything called "as"
+type TAsElementPropsOmittingAs<TAs extends React.ElementType> = DistributiveOmit<TAsElementProps<TAs>, "as">;
+type Props<TAs extends React.ElementType> = {
+  as?: TAs;
+} & TAsElementPropsOmittingAs<TAs>;
+
+export const UnwrappedLink = <TAs extends React.ElementType>(
+  props: Props<TAs>,
+  ref: React.ForwardedRef<any>,
 ) => {
   const { as: Comp = "a", ...rest } = props;
   return <Comp {...rest} ref={ref}></Comp>;
 };
 
-const Link = forwardRef(UnwrappedLink);
+const Link = fixedForwardRef(UnwrappedLink);
 
 /**
  * Should work without specifying 'as'
  */
 
 const Example1 = () => {
-  const ref = useRef<HTMLAnchorElement>(null);
-  const wrongRef = useRef<HTMLDivElement>(null);
+  const ref = React.useRef<HTMLAnchorElement>(null);
+  const wrongRef = React.useRef<HTMLDivElement>(null);
 
   return (
     <>
@@ -65,8 +77,8 @@ const Example1 = () => {
  */
 
 const Example2 = () => {
-  const ref = useRef<HTMLButtonElement>(null);
-  const wrongRef = useRef<HTMLSpanElement>(null);
+  const ref = React.useRef<HTMLButtonElement>(null);
+  const wrongRef = React.useRef<HTMLSpanElement>(null);
 
   return (
     <>
@@ -104,9 +116,9 @@ const Example2 = () => {
  * Should work with Custom components!
  */
 
-const Custom = forwardRef(
+const Custom = fixedForwardRef(
   (
-    props: { thisIsRequired: boolean },
+    props: { thisIsRequired: boolean; },
     ref: React.ForwardedRef<HTMLAnchorElement>,
   ) => {
     return <a ref={ref} />;
@@ -114,8 +126,8 @@ const Custom = forwardRef(
 );
 
 const Example3 = () => {
-  const ref = useRef<HTMLAnchorElement>(null);
-  const wrongRef = useRef<HTMLDivElement>(null);
+  const ref = React.useRef<HTMLAnchorElement>(null);
+  const wrongRef = React.useRef<HTMLDivElement>(null);
   return (
     <>
       <Link as={Custom} thisIsRequired />

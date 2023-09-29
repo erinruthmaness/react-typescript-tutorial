@@ -21,11 +21,40 @@
  * - 'as'
  * - Indexed access types
  */
-
 import { Equal, Expect } from "../helpers/type-utils";
 
-export const Wrapper = (props: any) => {
+//my idea
+type My_AsPropValue = (keyof JSX.IntrinsicElements);
+type My_OtherValidProps<P extends My_AsPropValue> = JSX.IntrinsicElements[P];
+
+type My_WrapperProps<P extends My_AsPropValue> = {
+  as: P;
+} & My_OtherValidProps<P>;
+
+export const My_Wrapper = <T extends My_AsPropValue,>(props: My_WrapperProps<T>) => {
   const Comp = props.as;
+  //note! I was only missing adding "as string" to the above!
+  //hover over Comp and you can tell it was struggling to narrow down what its type was
+  //it also works if I add `as My_AsPropValue` instead of `as string` - nice
+  // @ts-expect-error JSX element type 'Comp' does not have any construct or call signatures.  const Comp: T | (T & (string | undefined))
+  return <Comp {...(props as My_OtherValidProps<T>)}></Comp>;
+};
+
+//solution 1 - lots of work for the IDE to index though
+//this instantiates every single possible option as a union type
+type WrapperProps1 = {
+  [Element in keyof JSX.IntrinsicElements]: {
+    as: Element;
+  } & React.ComponentProps<Element>
+}[keyof JSX.IntrinsicElements];
+
+//solution 2
+type WrapperProps2<T extends keyof JSX.IntrinsicElements> = {
+  as: T;
+} & React.ComponentProps<T>;
+
+export const Wrapper = <T extends keyof JSX.IntrinsicElements,>(props: WrapperProps2<T>) => {
+  const Comp = props.as as string;
   return <Comp {...(props as any)}></Comp>;
 };
 

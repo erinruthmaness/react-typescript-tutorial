@@ -1,9 +1,10 @@
 import { Router, useRouter } from "fake-external-lib";
 
-export const withRouter = (Component: any) => {
-  const NewComponent = (props: any) => {
+export const withRouter = <WrappedProps,>(Component: React.ComponentType<WrappedProps>) => {
+
+  const NewComponent = (props: Omit<WrappedProps, "router">) => {
     const router = useRouter();
-    return <Component {...props} router={router} />;
+    return <Component {...props as WrappedProps} router={router} />;
   };
 
   NewComponent.displayName = `withRouter(${Component.displayName})`;
@@ -11,7 +12,7 @@ export const withRouter = (Component: any) => {
   return NewComponent;
 };
 
-const UnwrappedComponent = (props: { router: Router; id: string }) => {
+const UnwrappedComponent = (props: { router: Router; id: string; }) => {
   return null;
 };
 

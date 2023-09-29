@@ -17,13 +17,15 @@ import { Equal, Expect } from "../helpers/type-utils";
  *   - ComponentPropsWithRef
  *   - ComponentProps
  */
-export const Wrapper = <TAs extends keyof JSX.IntrinsicElements>(
+//ElementType is basically the same keyof JSX.IntrinsicElements | ComponentType
+export const Wrapper = <TAs extends React.ElementType>(
   props: {
     as: TAs;
-  } & React.ComponentProps<TAs>,
+  } & React.ComponentPropsWithoutRef<TAs>, //there's a note in the docs that says prefer this or the WithRef kind
 ) => {
-  const Comp = props.as as string;
+  const Comp = props.as; //don't need "as string" anymore - React.ElementType has it
 
+  //could disable type checking here since we know it's okay and without `any` it wouldn't be able to index fast enough
   return <Comp {...(props as any)}></Comp>;
 };
 
@@ -57,7 +59,7 @@ const Example1 = () => {
  * Should work with Custom components!
  */
 
-const Custom = (props: { thisIsRequired: boolean }) => {
+const Custom = (props: { thisIsRequired: boolean; }) => {
   return <a />;
 };
 

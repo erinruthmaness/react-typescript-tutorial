@@ -22,7 +22,7 @@ type Props<T> = {
 // }
 
 /**
- * By ditching defaultProps and propTypes on the type passed ro render,
+ * By ditching defaultProps and propTypes on the type passed to render,
  * we can make use of something called 'higher order function type
  * inference':
  *

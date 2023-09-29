@@ -1,10 +1,14 @@
 import { ElementType } from "react";
 import { Equal, Expect } from "../helpers/type-utils";
 
-export const Link = <TAs extends ElementType>(
+export const Link = <TAs extends ElementType>( //when you pass a default value (like `TAs extends ElementType = "a"`), it works except you lose autocomplete - TS glitch
   props: {
-    as: TAs;
-  } & React.ComponentPropsWithoutRef<TAs>,
+    as?: TAs;
+  } & React.ComponentPropsWithoutRef<
+    //if TAs is the default value, pass "a" instead
+    //but if TAs has a value that isn't the default, pass that instead
+    ElementType extends TAs ? "a" : TAs //if "ElementType" can be passed to TAs - it will fail if TAs is more narrow than ElementType
+  >,
 ) => {
   const { as: Comp = "a", ...rest } = props;
   return <Comp {...rest}></Comp>;
@@ -65,7 +69,7 @@ const Example2 = () => {
  */
 
 const Custom = (
-  props: { thisIsRequired: boolean },
+  props: { thisIsRequired: boolean; },
   ref: React.ForwardedRef<HTMLAnchorElement>,
 ) => {
   return <a ref={ref} />;

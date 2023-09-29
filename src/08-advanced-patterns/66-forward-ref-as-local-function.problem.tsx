@@ -1,4 +1,4 @@
-import { ForwardedRef, forwardRef, useRef } from "react";
+import React from "react";
 import { Equal, Expect } from "../helpers/type-utils";
 
 /**
@@ -6,11 +6,18 @@ import { Equal, Expect } from "../helpers/type-utils";
  * give fixedForwardRef a type signature that allows it to
  * work with the example below.
  */
-function fixedForwardRef(
-  render: (props: any, ref: any) => any,
-): (props: any) => any {
-  return forwardRef(render) as any;
+
+//this is adding an extra function on top, which isn't really necessary
+type RenderType<T, P = {}> = (props: P, ref: React.Ref<T>) => React.ReactNode;
+type ReturnType<T, P = {}> = (props: P & React.RefAttributes<T>) => React.ReactNode;
+
+function fixedForwardRef<T, P = {}>(render: RenderType<T, P>): ReturnType<T, P> {
+  return React.forwardRef(render) as ReturnType<T, P>;
 }
+
+//but, it's also possible to......
+type FixedForwardRefType = <T, P = {}>(render: RenderType<T, P>) => ReturnType<T, P>;
+const fixedForwardRef2 = React.forwardRef as FixedForwardRefType; //basically just overwrite the type of forwardRef
 
 type Props<T> = {
   data: T[];
@@ -19,16 +26,16 @@ type Props<T> = {
 
 export const Table = <T,>(
   props: Props<T>,
-  ref: ForwardedRef<HTMLTableElement>,
+  ref: React.ForwardedRef<HTMLTableElement>,
 ) => {
   return <table ref={ref} />;
 };
 
-const ForwardReffedTable = fixedForwardRef(Table);
+const ForwardReffedTable = fixedForwardRef2(Table);
 
 const Parent = () => {
-  const tableRef = useRef<HTMLTableElement>(null);
-  const wrongRef = useRef<HTMLDivElement>(null);
+  const tableRef = React.useRef<HTMLTableElement>(null);
+  const wrongRef = React.useRef<HTMLDivElement>(null);
   return (
     <>
       <ForwardReffedTable
