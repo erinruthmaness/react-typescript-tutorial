@@ -5,12 +5,37 @@
  * CMD-click each of them to understand the difference.
  */
 
-type ClickMe = React.ReactElement;
+type ClickMeThree = React.ReactNode; //all the things you could possibly render within a React component
+/*
+type ReactNode =
+        | ReactElement
+        | string
+        | number
+        | ReactFragment
+        | ReactPortal
+        | boolean
+        | null
+        | undefined
+        | DO_NOT_USE_OR_YOU_WILL_BE_FIRED_EXPERIMENTAL_REACT_NODES[keyof DO_NOT_USE_OR_YOU_WILL_BE_FIRED_EXPERIMENTAL_REACT_NODES];
+*/
+type ClickMe = React.ReactElement; //this is what React.createElement spits out
+//is a member(?) of React.ReactNode
+/*
+    interface ReactElement<P = any, T extends string | JSXElementConstructor<any> = string | JSXElementConstructor<any>> {
+        type: T;
+        props: P;
+        key: Key | null;
+    }
+*/
+
 type ClickMeToo = JSX.Element;
-type ClickMeThree = React.ReactNode;
+//extends React.ReactElement<any, any>
+//JSX is a global namespace declared in the React index.d.ts file - comparable to React.JSX.Element, which
+//is basically the JSX namespace re-declared within the React namespace for tidiness/consistency
+//JSX.Element is essentially identical to React.ReactElement, but declared in a different namespace
 
 /**
- * 2. What is the return type of this Component?
+ * 2. What is the return type of this Component?  //JSX.Element
  */
 const Component = () => {
   return <div>Hello world</div>;
@@ -46,8 +71,13 @@ const Component3 = (): React.ReactElement => {
 </>;
 
 /**
- * 4b. ...but this one does?
+ * 4b. ...but this one does?  //the string doesn't count as JSX
  */
 const Component4 = (): React.ReactElement => {
+  // @ts-expect-error
   return "hello!";
 };
+
+/* TAKEAWAY:
+You probably don't need to use either JSX.Element or React.ReactElement in your code, because they're too narrow.
+*/

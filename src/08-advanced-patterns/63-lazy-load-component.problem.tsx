@@ -1,8 +1,11 @@
-import { lazy, Suspense, useMemo } from "react";
+import React from "react";
 
-type Props = {
-  loader: unknown;
-};
+//the componentType is what's generic, so constrain it to the kind of thing it is with `extends`
+type Props<GenericComponentType extends React.ComponentType<any>> = {
+  loader: () => Promise<{
+    default: GenericComponentType; //the import isn't just a component - it's an object with a key of "default", and the value of that is the component
+  }>;
+} & React.ComponentProps<GenericComponentType>;
 
 /**
  * 1. This component is supposed to take a loader function that returns a
@@ -16,13 +19,20 @@ type Props = {
  * - You'll need to make this a generic component!
  * - React.ComponentProps will come in handy, as will React.ComponentType
  */
-function LazyLoad({ loader, ...props }: Props) {
-  const LazyComponent = useMemo(() => lazy(loader), [loader]);
+//the generic componentType needs to be constrained here, too (use `extends`)
+function LazyLoad<GenericComponentType extends React.ComponentType<any>>({
+  loader,
+  ...props
+}: Props<GenericComponentType>) {
+
+  const LazyComponent = React.useMemo(() => {
+    return React.lazy(loader);
+  }, [loader]);
 
   return (
-    <Suspense fallback={"Loading..."}>
+    <React.Suspense fallback={"Loading..."}>
       <LazyComponent {...props} />
-    </Suspense>
+    </React.Suspense>
   );
 }
 

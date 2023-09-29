@@ -9,7 +9,18 @@
  * Hint - you'll need to declaration merge with an existing
  * interface in the JSX namespace.
  */
-
+type test = JSX.IntrinsicElements;
+declare global {
+  namespace React { //you want to put this in React's JSX namespace just in case you have something else using JSX (unlikely but not impossible)
+    namespace JSX {
+      interface IntrinsicElements {
+        something: {
+          id: string;
+        };
+      }
+    }
+  }
+}
 <>
   <something id="123"></something>
 

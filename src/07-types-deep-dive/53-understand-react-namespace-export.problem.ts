@@ -19,3 +19,13 @@ const element = React.createElement("div");
 //              ^?
 
 export {};
+
+/*
+
+in the index.d.ts file:
+
+// eslint-disable-next-line export-just-namespace
+export = React; //"all of the stuff in namespace React gets put into the export, and we can use the namespace as a value"
+export as namespace React; //"make this available globally"
+
+*/

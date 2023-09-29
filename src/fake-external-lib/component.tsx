@@ -1,4 +1,4 @@
-const MyComponent = (props: { id: string }) => {
+const MyComponent = (props: { id: string; somethingElse?: number }) => {
   return <div>Hello!</div>;
 };
 
