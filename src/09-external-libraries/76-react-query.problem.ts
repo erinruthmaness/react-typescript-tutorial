@@ -8,7 +8,7 @@ interface User {
 
 const getUser = async (): Promise<User> => {
   return Promise.resolve({
-    fullName: "Matt Pocock",
+    fullName: "Erin Ruth Maness", //hmph
     job: "Developer",
   });
 };
@@ -22,6 +22,7 @@ const getUser = async (): Promise<User> => {
  * what's the thing that's similar about the first three that's different to
  * the other six?
  */
+//no longer accepting QueryKey as a parameter
 
 useQuery;
 // ^ CMD+click on this to see the overloads
@@ -33,6 +34,8 @@ useQuery;
 const query1 = useQuery({
   queryFn: getUser,
 });
+
+query1.data?.fullName
 
 // Without initialData, the type of query1.data is User | undefined
 type test1 = Expect<Equal<typeof query1.data, User | undefined>>;
@@ -48,6 +51,8 @@ const query2 = useQuery({
     job: "",
   },
 });
+
+query2.data
 
 // WITH initialData, the type of query.data is just User
 type test2 = Expect<Equal<typeof query2.data, User>>;

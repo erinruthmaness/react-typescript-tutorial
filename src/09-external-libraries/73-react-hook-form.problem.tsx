@@ -55,14 +55,14 @@ const Example2 = () => {
  * 3. If we don't pass default values, how do we get
  * react-hook-form to understand what type our fields are?
  */
-
 type FormValues = {
   firstName: string;
   lastName: string;
 };
 
 const Example3 = () => {
-  const form = useForm();
+  //if you don't pass it a type argument, it defaults to that Record<string,any>
+  const form = useForm<FormValues>();
 
   return (
     <form

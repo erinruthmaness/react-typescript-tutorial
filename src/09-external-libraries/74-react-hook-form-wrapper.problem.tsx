@@ -1,4 +1,4 @@
-import { useForm } from "react-hook-form";
+import { useForm, DefaultValues, FieldValues } from "react-hook-form";
 import { Equal, Expect, Extends } from "../helpers/type-utils";
 
 /**
@@ -12,9 +12,10 @@ import { Equal, Expect, Extends } from "../helpers/type-utils";
  *
  * defaultValues as DefaultValues<TValues>
  */
-const useCustomForm = (defaultValues: any) => {
+const useCustomForm = <TValues extends FieldValues,>(defaultValues: TValues) => {
   const form = useForm({
-    defaultValues: defaultValues,
+    //don't be afraid to use "as" at these integration points
+    defaultValues: defaultValues as DefaultValues<TValues>, //we know what the type will be so this is harmless
   });
 
   return {

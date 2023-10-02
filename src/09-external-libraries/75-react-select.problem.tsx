@@ -1,4 +1,4 @@
-import ReactSelect from "react-select";
+import ReactSelect, { GroupBase, Props } from "react-select";
 import { Equal, Expect } from "../helpers/type-utils";
 
 /**
@@ -7,7 +7,39 @@ import { Equal, Expect } from "../helpers/type-utils";
  *
  * Here's a clue: ReactSelect exports a type called 'Props'...
  */
-export const Select = (props) => {
+// type StateManagedSelect<
+//    Option = unknown, IsMulti extends boolean = false, 
+//    Group extends GroupBase<Option> = GroupBase<Option>
+// >(props: StateManagerProps<Option, IsMulti, Group> & RefAttributes<Select<Option, IsMulti, Group>>
+
+//type StateManagerProps<
+//    Option = unknown, 
+//    IsMulti extends boolean = boolean, 
+//    Group extends GroupBase<Option> = GroupBase<Option>
+// > = SelectPropsWithOptionalStateManagedProps<Option, IsMulti, Group> & StateManagerAdditionalProps<Option>
+
+//type SelectPropsWithOptionalStateManagedProps<
+//    Option, 
+//    IsMulti extends boolean, 
+//    Group extends GroupBase<Option>
+// > = Omit<PublicBaseSelectProps<Option, IsMulti, Group>, StateManagedPropKeys> & Partial<PublicBaseSelectProps<Option, IsMulti, Group>>;
+
+//PublicBaseSelectProps is basically every <select> props you can imagine React might use
+//type StateManagedPropKeys = 'inputValue' | 'menuIsOpen' | 'onChange' | 'onInputChange' | 'onMenuClose' | 'onMenuOpen' | 'value';
+
+//I think the Option generic thing eventually gets passed to "data" in OptionProps
+//It looks like IsMulti gets used to type OnChangeValue return and PropsValue type (array or not)
+
+//export interface GroupBase<Option> {
+//  readonly options: readonly Option[];
+//  readonly label?: string;
+//}
+
+export const Select = <
+  Option = unknown,
+  IsMulti extends boolean = false,
+  Group extends GroupBase<Option> = GroupBase<Option>,
+>(props: Props<Option, IsMulti, Group>) => {
   return <ReactSelect {...props} />;
 };
 
